@@ -1,0 +1,107 @@
+spring:
+  shardingsphere:
+    datasource:
+      names: master,slave
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3307/tuling?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Hongkong
+        username: user
+        password: 123456
+        #连接池配置
+        #初始连接数,就是 线程池一旦被创建，里面有多少个数据库连接！！
+        initial-size: 0
+        #获取连接连接的最大等待时间。单位为 ms,如果超过此时间将接到异常。设为-1表示无限制。
+        #配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。
+        max-wait: 60000
+        #最大连接数据库连接数,设 0 为没有限制
+        max-active: 100
+        #最大等待连接中的数量,设 0 为没有限制,已经不再使用，配置了也没效果
+        #max-idle:
+        #最小连接池数量
+        #min-idle:
+        #是否缓存preparedStatement，也就是PSCache。
+        #PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+        poolPreparedStatements: false
+        #要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+        #在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+        maxOpenPreparedStatements: 0
+        #用来检测连接是否有效的sql，要求是一个查询语句。
+        #如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用。
+        validationQuery: SELECT 1 FROM dual
+        #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。默认值为true
+        test-on-borrow: false
+        #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。默认值为false
+        test-on-return: false
+        #建议配置为true，不影响性能，并且保证安全性。
+        #申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+        testWhileIdle: true
+        #有两个含义：
+        #1) Destroy线程会检测连接的间隔时间
+        #2) testWhileIdle的判断依据，详细看testWhileIdle属性的说明
+        timeBetweenEvictionRunsMillis: 60000
+        #不再使用，一个DruidDataSource只支持一个EvictionRun
+        #numTestsPerEvictionRun:
+        #连接保持空闲而不被驱逐的最长时间。
+        min-evictable-idle-time-millis: 300000
+        filters: stat
+      slave:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3308/tuling?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Hongkong
+        username: user
+        password: 123456
+        #连接池配置
+        #初始连接数,就是 线程池一旦被创建，里面有多少个数据库连接！！
+        initial-size: 0
+        #获取连接连接的最大等待时间。单位为 ms,如果超过此时间将接到异常。设为-1表示无限制。
+        #配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。
+        max-wait: 60000
+        #最大连接数据库连接数,设 0 为没有限制
+        max-active: 100
+        #最大等待连接中的数量,设 0 为没有限制,已经不再使用，配置了也没效果
+        #max-idle:
+        #最小连接池数量
+        #min-idle:
+        #是否缓存preparedStatement，也就是PSCache。
+        #PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+        poolPreparedStatements: false
+        #要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+        #在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+        maxOpenPreparedStatements: 0
+        #用来检测连接是否有效的sql，要求是一个查询语句。
+        #如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用。
+        validationQuery: SELECT 1 FROM dual
+        #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。默认值为true
+        test-on-borrow: false
+        #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。默认值为false
+        test-on-return: false
+        #建议配置为true，不影响性能，并且保证安全性。
+        #申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+        testWhileIdle: true
+        #有两个含义：
+        #1) Destroy线程会检测连接的间隔时间
+        #2) testWhileIdle的判断依据，详细看testWhileIdle属性的说明
+        timeBetweenEvictionRunsMillis: 60000
+        #不再使用，一个DruidDataSource只支持一个EvictionRun
+        #numTestsPerEvictionRun:
+        #连接保持空闲而不被驱逐的最长时间。
+        min-evictable-idle-time-millis: 300000
+        filters: stat
+    masterslave:
+      load-balance-algorithm-type: round_robin
+      name: ms
+      master-data-source-name: master
+      slave-data-source-names: slave
+    props:
+      sql:
+        show: true
+mybatis:
+  mapper-locations:
+    - classpath:mapper/*.xml
+server:
+  servlet:
+    context-path: /test/
+logging:
+  level:
+    root: info
